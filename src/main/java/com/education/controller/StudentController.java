@@ -45,9 +45,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
    
     @PutMapping("/update/{id}")
     @PreAuthorize("hasAuthority('ROLE_USER')")
-    public ResponseEntity<StudentDto> updateStudent(@PathVariable(name = "id") Integer id,
+    public ResponseEntity<String> updateStudent(@PathVariable(name = "id") Integer id,
             @RequestBody StudentDto student) {
-        StudentDto std = studentService.updateStudent(id, student);
+        String std = studentService.updateStudent(id, student);
         return new ResponseEntity<>(std, HttpStatus.CREATED);
     }
     @DeleteMapping("/delete/{id}")

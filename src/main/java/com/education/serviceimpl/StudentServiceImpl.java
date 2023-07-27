@@ -1,6 +1,7 @@
 package com.education.serviceimpl;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -14,6 +15,7 @@ import com.education.entity.StudentEntity;
 import com.education.repository.CourseRepository;
 import com.education.repository.StudentRepository;
 import com.education.service.StudentService;
+import com.education.utils.CommonValidator;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -52,20 +54,54 @@ public class StudentServiceImpl implements StudentService {
 	@Override
 	public List<StudentDto> getAllStudents() {
 		// TODO Auto-generated method stub
+	//	mapEntityToDto(studentRepository.findAll());
 		return null;
 	}
 
 	@Transactional
 	@Override
-	public StudentDto updateStudent(Integer studentId, StudentDto student) {
-		// TODO Auto-generated method stub
-		return null;
+	public String updateStudent(Integer studentId, StudentDto student) {
+		try {
+			StudentEntity updateStudent=new StudentEntity();
+			StudentEntity getData=new StudentEntity();
+			if(studentId !=null) { 
+					Optional<StudentEntity> data= studentRepository.findById(Long.valueOf(studentId));
+					if(!data.isEmpty()) {
+						updateStudent.setFullName(student.getFullName());
+						updateStudent.setAddress(student.getAddress());
+						updateStudent.setEmailId(student.getEmailId());
+						updateStudent.setTelephoneNumber(student.getTelephoneNumber()); 
+						
+						getData=studentRepository.save(updateStudent);
+					}else {
+						return "ID not exist";
+					} 
+			}else {
+				return "ID not Found";
+			}
+			return "updated successfully";
+		} catch (Exception e) {
+			log.error("Exception occured during updating student",e);
+		}
+		return "Unable to update student";
+		
 	}
 
 	@Override
 	public String deleteStudent(Integer studentId) {
-		// TODO Auto-generated method stub
-		return null;
+		try {
+			StudentEntity getCourse= studentRepository.findById(Long.valueOf(studentId)).get();
+			if(CommonValidator.isNull(getCourse)) {
+				return studentId+" id not found";
+			}else {
+				studentRepository.deleteById(Long.valueOf(studentId));
+			}
+			return "Deleted successfully";
+		} catch (Exception e) {
+			log.error("Exception occured during delete student",e);
+		}
+		return "Unable to delete course";
+		
 	}
 	
 	 

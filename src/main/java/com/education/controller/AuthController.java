@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -29,6 +31,7 @@ import com.education.jwt.JwtUtils;
 import com.education.repository.RoleRepository;
 import com.education.repository.StudentRepository;
 import com.education.security.service.UserDetailsImpl;
+import com.education.serviceimpl.StudentServiceImpl;
 
 import jakarta.validation.Valid;
 
@@ -36,6 +39,8 @@ import jakarta.validation.Valid;
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
+	private static final Logger log=LoggerFactory.getLogger(AuthController.class);
+
   @Autowired
   AuthenticationManager authenticationManager;
 
@@ -50,7 +55,7 @@ public class AuthController {
 
   @Autowired
   JwtUtils jwtUtils;
-
+/*
   @PostMapping("/signin")
   public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
 	   System.out.println(loginRequest.getUsername()+"   ************************ "+loginRequest.getPassword());
@@ -66,7 +71,20 @@ public class AuthController {
     System.out.println("====================************************");
     return ResponseEntity.ok(new JwtResponse(jwt));
   }
+  */
+  @PostMapping("/signin")
+  public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+      log.info("/login called");
+      Authentication authentication = authenticationManager.authenticate(
+              new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),loginRequest.getPassword()
+              )
+      );
 
+      SecurityContextHolder.getContext().setAuthentication(authentication);
+
+      String token = jwtUtils.generateJwtToken(authentication);
+      return ResponseEntity.ok(new JwtResponse(token));
+  }
   @PostMapping("/signup")
   public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
     if (studentRepository.existsStudentByFullName(signUpRequest.getUsername())) {
