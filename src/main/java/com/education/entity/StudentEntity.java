@@ -44,7 +44,7 @@ public class StudentEntity {
 	    private Set<Courses> courses;
 	 
 	    @ManyToMany(fetch = FetchType.EAGER)
-	    @JoinTable(name = "user_role",joinColumns = @JoinColumn(name = "user_id"),inverseJoinColumns = @JoinColumn(name = "role_id"))
+	    @JoinTable(name = "student_role",joinColumns = @JoinColumn(name = "student_id"),inverseJoinColumns = @JoinColumn(name = "role_id"))
 	    private Set<Role> roles = new HashSet<>();
 	    
 	 public StudentEntity(String username, String email, String encode) {
