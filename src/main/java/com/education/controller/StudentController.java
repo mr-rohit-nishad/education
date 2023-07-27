@@ -43,14 +43,14 @@ import io.swagger.v3.oas.annotations.tags.Tag;
         return new ResponseEntity<>(students, HttpStatus.OK);
     }
    
-    @PutMapping("/update/{id}")
+    @PutMapping("update/{id}")
     @PreAuthorize("hasAuthority('ROLE_USER')")
     public ResponseEntity<String> updateStudent(@PathVariable(name = "id") Integer id,
             @RequestBody StudentDto student) {
         String std = studentService.updateStudent(id, student);
         return new ResponseEntity<>(std, HttpStatus.CREATED);
     }
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("delete/{id}")
     @PreAuthorize("hasAuthority('ROLE_USER')")
     public ResponseEntity<String> deleteStudent(@PathVariable(name = "id") Integer studentId) {
         String message = studentService.deleteStudent(studentId);
